@@ -7,22 +7,31 @@ VALUES ("Marketing"),("Engineering"),("Human Resources");
 
 /*Create seed data for role table*/
 INSERT INTO role (title, salary, department_id)
+
 VALUES ("Mechanical Engineer",68000,(SELECT id FROM department
 WHERE name="Engineering")),
+
 ("Electrical Engineer",78000,(SELECT id FROM department
 WHERE name="Engineering")),
+
 ("Industrial Engineer",68000,(SELECT id FROM department
 WHERE name="Engineering")),
+
 ("Manager",93000,(SELECT id FROM department
 WHERE name="Engineering")),
+
 ("Marketing Specialist",45000,(SELECT id FROM department
 WHERE name="Marketing")),
+
 ("Senior Marketing Specialist",86000,(SELECT id FROM department
 WHERE name="Marketing")),
+
 ("Manager",930000,(SELECT id FROM department
 WHERE name="Marketing")),
+
 ("Associate",50000,(SELECT id FROM department
 WHERE name="Human Resources")),
+
 ("Director",110000,(SELECT id FROM department
 WHERE name="Human Resources"));
 

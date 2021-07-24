@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "seed": "node seeds/seed"
-  },
+    "seed": "node db/seed.sql"
+    },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MasonHames/12-Employee-Management-System.git"
