@@ -1,8 +1,8 @@
-/*Use employees db*/
-USE employees_DB;
+/*Use company db*/
+USE companyDB;
 
 /*Create seed data for department*/
-INSERT INTO department (name)
+INSERT INTO departments (name)
 VALUES ("Marketing"),("Engineering"),("Human Resources");
 
 /*Create seed data for role table*/
