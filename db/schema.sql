@@ -1,7 +1,7 @@
 /* Drop/create database */
-DROP DATABASE IF EXISTS companyDB;
-CREATE database companyDB;
-USE companyDB;
+DROP DATABASE IF EXISTS company_DB;
+CREATE database company_DB;
+USE company_DB;
 /* Creating table of departments */
 CREATE TABLE departments (
   id INT UNSIGNED AUTO_INCREMENT,

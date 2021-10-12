@@ -2,3 +2,4 @@
 node_modules/
 # Mac users
 .DS_Store
+.env

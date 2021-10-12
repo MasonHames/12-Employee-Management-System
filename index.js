@@ -1,9 +1,10 @@
-//Add dependencies
+// Required dependencies
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const cTable = require("console.table");
 const colors = require("colors");
-//set connection details for database
+
+// Create connection
 const connection = mysql.createConnection({
   host: "localhost",
 
@@ -15,53 +16,55 @@ const connection = mysql.createConnection({
 
   // database and password credentials
   password: "",
-  database: "companyDB",
+  database: "company_DB",
 });
 
+// Function to view all employees
 const allEmp = () => {
   connection.query(
     // Selecting and alias-ing the columns to display from a joined table
     // the joined table does a self-join to add a column for the manager name, matched to the manager_id
     // and left joins to add columns for title, salary, and department
     `SELECT 
-          allEmployees.id AS ID,
-          allEmployees.first_name AS First_Name,
-          allEmployees.last_name AS Last_Name,
-          allEmployees.title AS Title,
-          allEmployees.name AS Department,
-          allEmployees.salary AS Salary,
-          allEmployees.manager AS Manager
-      FROM 
-          (SELECT 
-              employee.id, 
-              employee.first_name, 
-              employee.last_name, 
-              role.title, 
-              role.department_id, 
-              departments.name, 
-              role.salary, 
-              employee.manager_id,
-              concat(m.first_name," ", m.last_name) manager
-          FROM employee
-          LEFT JOIN employee m ON m.id = employee.manager_id
-          LEFT JOIN role ON employee.role_id = role.id
-          LEFT JOIN departments ON role.department_id = departments.id)
-      AS allEmployees`,
+            allEmployees.id AS ID,
+            allEmployees.first_name AS First_Name,
+            allEmployees.last_name AS Last_Name,
+            allEmployees.title AS Title,
+            allEmployees.name AS Department,
+            allEmployees.salary AS Salary,
+            allEmployees.manager AS Manager
+        FROM 
+            (SELECT 
+                employee.id, 
+                employee.first_name, 
+                employee.last_name, 
+                role.title, 
+                role.department_id, 
+                departments.name, 
+                role.salary, 
+                employee.manager_id,
+                concat(m.first_name," ", m.last_name) manager
+            FROM employee
+            LEFT JOIN employee m ON m.id = employee.manager_id
+            LEFT JOIN role ON employee.role_id = role.id
+            LEFT JOIN departments ON role.department_id = departments.id)
+        AS allEmployees`,
     (err, employees) => {
       if (err) throw err;
       // Display all employees as table in console
       console.log(
-        "\nAll company employees are as follows:\n".brightGreen.italic
+        "\nAll company employees are as follows:\n".brightBlue.italic
       );
       console.table(employees);
       console.log(
         `---------------------------------------------------------------------\n`
-          .brightGreen.bold
+          .brightBlue.bold
       );
       init();
     }
   );
 };
+
 // Function to view employees by department
 const empByDept = () => {
   // Selecting all departments to give the user departments to choose from
@@ -90,48 +93,50 @@ const empByDept = () => {
           // and left joins to add columns for title, salary, and department
           // and returns all employees where their department is the user's selected department
           `SELECT 
-                  allEmployees.id AS ID,
-                  allEmployees.first_name AS First_Name,
-                  allEmployees.last_name AS Last_Name,
-                  allEmployees.title AS Title,
-                  allEmployees.salary AS Salary,
-                  allEmployees.manager AS Manager
-              FROM 
-                  (SELECT 
-                      employee.id, 
-                      employee.first_name, 
-                      employee.last_name, 
-                      role.title, 
-                      role.department_id, 
-                      departments.name, 
-                      role.salary, 
-                      employee.manager_id,
-                      concat(m.first_name," ", m.last_name) manager
-                  FROM employee
-                  LEFT JOIN employee m ON m.id = employee.manager_id
-                  LEFT JOIN role ON employee.role_id = role.id
-                  LEFT JOIN departments ON role.department_id = departments.id)
-              AS allEmployees
-              WHERE ?`,
+                    allEmployees.id AS ID,
+                    allEmployees.first_name AS First_Name,
+                    allEmployees.last_name AS Last_Name,
+                    allEmployees.title AS Title,
+                    allEmployees.salary AS Salary,
+                    allEmployees.manager AS Manager
+                FROM 
+                    (SELECT 
+                        employee.id, 
+                        employee.first_name, 
+                        employee.last_name, 
+                        role.title, 
+                        role.department_id, 
+                        departments.name, 
+                        role.salary, 
+                        employee.manager_id,
+                        concat(m.first_name," ", m.last_name) manager
+                    FROM employee
+                    LEFT JOIN employee m ON m.id = employee.manager_id
+                    LEFT JOIN role ON employee.role_id = role.id
+                    LEFT JOIN departments ON role.department_id = departments.id)
+                AS allEmployees
+                WHERE ?`,
           { name: answer.chosenDept },
           (err, res) => {
             if (err) throw err;
             // Display all employees in the department as table in console
             console.log(
               `\nEmployees in the ${answer.chosenDept} department are as follows:\n`
-                .brightGreen.italic
+                .brightBlue.italic
             );
             console.table(res);
             console.log(
               `---------------------------------------------------------------------\n`
-                .brightGreen.bold
+                .brightBlue.bold
             );
             init();
           }
         );
       });
   });
-}; // Function to view employees by manager
+};
+
+// Function to view employees by manager
 const empByMgr = () => {
   // Select all employees to give the user a list from which to choose a manager
   connection.query(
@@ -195,12 +200,12 @@ const empByMgr = () => {
               // Display all employees under that manager as table in console
               console.log(
                 `\nEmployees managed by ${answer.chosenMgr} are as follows:\n`
-                  .brightGreen.italic
+                  .brightBlue.italic
               );
               console.table(res);
               console.log(
                 `---------------------------------------------------------------------\n`
-                  .brightGreen.bold
+                  .brightBlue.bold
               );
               init();
             }
@@ -288,11 +293,11 @@ const addEmp = () => {
                     // Display message in console of added employee
                     console.log(
                       `\nYou added ${answer.first_name} ${answer.last_name} as an employee!\n`
-                        .brightGreen.italic
+                        .brightBlue.italic
                     );
                     console.log(
                       `---------------------------------------------------------------------\n`
-                        .brightGreen.bold
+                        .brightBlue.bold
                     );
                     init();
                   }
@@ -351,11 +356,11 @@ const remEmp = () => {
               // Display message in console of removed employee
               console.log(
                 `\nSuccessfully removed ${answer.removedEmp} as an employee!\n`
-                  .brightGreen.italic
+                  .brightBlue.italic
               );
               console.log(
                 `---------------------------------------------------------------------\n`
-                  .brightGreen.bold
+                  .brightBlue.bold
               );
               init();
             }
@@ -433,11 +438,11 @@ const updateRole = () => {
                       // Display message in console of updated employee's role
                       console.log(
                         `\n${chosenEmployee.first_name} ${chosenEmployee.last_name}'s role successfully updated!\n`
-                          .brightGreen.italic
+                          .brightBlue.italic
                       );
                       console.log(
                         `---------------------------------------------------------------------\n`
-                          .brightGreen.bold
+                          .brightBlue.bold
                       );
                       init();
                     }
@@ -521,11 +526,11 @@ const updateMgr = () => {
               // Display console message of updated employee's manager
               console.log(
                 `\n${chosenEmployee.first_name} ${chosenEmployee.last_name}'s manager successfully updated to ${chosenManager.first_name} ${chosenManager.last_name}!\n`
-                  .brightGreen.italic
+                  .brightBlue.italic
               );
               console.log(
                 `---------------------------------------------------------------------\n`
-                  .brightGreen.bold
+                  .brightBlue.bold
               );
               init();
             }
@@ -545,12 +550,12 @@ const allRoles = () => {
       if (err) throw err;
       // Display all roles as table in console
       console.log(
-        "\nAll of the company roles are as follows:\n".brightGreen.italic
+        "\nAll of the company roles are as follows:\n".brightBlue.italic
       );
       console.table(roles);
       console.log(
         `---------------------------------------------------------------------\n`
-          .brightGreen.bold
+          .brightBlue.bold
       );
       init();
     }
@@ -567,12 +572,12 @@ const allDept = () => {
       if (err) throw err;
       // Display all departments as table in console
       console.log(
-        "\nAll of the company departments are as follows:\n".brightGreen.italic
+        "\nAll of the company departments are as follows:\n".brightBlue.italic
       );
       console.table(departments);
       console.log(
         `---------------------------------------------------------------------\n`
-          .brightGreen.bold
+          .brightBlue.bold
       );
       init();
     }
@@ -600,12 +605,12 @@ const addDept = () => {
           if (err) throw err;
           // Display console message of added department
           console.log(
-            `\n${answer.name} successfully added to departments!\n`.brightGreen
+            `\n${answer.name} successfully added to departments!\n`.brightBlue
               .italic
           );
           console.log(
             `---------------------------------------------------------------------\n`
-              .brightGreen.bold
+              .brightBlue.bold
           );
           init();
         }
@@ -677,12 +682,12 @@ const addRole = () => {
               if (err) throw err;
               // Display console message of added role
               console.log(
-                `\n${answer.title} successfully added as a role!\n`.brightGreen
+                `\n${answer.title} successfully added as a role!\n`.brightBlue
                   .italic
               );
               console.log(
                 `---------------------------------------------------------------------\n`
-                  .brightGreen.bold
+                  .brightBlue.bold
               );
               init();
             }
@@ -736,11 +741,11 @@ const remDept = () => {
               // Display console message of removed department
               console.log(
                 `\nSuccessfully removed ${chosenDepartment.name} as a department!\n`
-                  .brightGreen.italic
+                  .brightBlue.italic
               );
               console.log(
                 `---------------------------------------------------------------------\n`
-                  .brightGreen.bold
+                  .brightBlue.bold
               );
               init();
             }
@@ -794,80 +799,11 @@ const remRole = () => {
               // Display console message of removed role
               console.log(
                 `\nSuccessfully removed ${chosenRole.title} as a role!\n`
-                  .brightGreen.italic
+                  .brightBlue.italic
               );
               console.log(
                 `---------------------------------------------------------------------\n`
-                  .brightGreen.bold
-              );
-              init();
-            }
-          );
-        });
-    }
-  );
-};
-
-// Function to show the total utilized budget by department
-const deptBudget = () => {
-  // Select all departments from the departments table to give user a list to choose a department for which to display their used budget
-  connection.query(
-    `SELECT * 
-        FROM departments`,
-    (err, results) => {
-      if (err) throw err;
-
-      // Prompt user to choose a department
-      inquirer
-        .prompt([
-          {
-            type: "list",
-            message: "Which department?",
-            choices() {
-              const choiceArray = [];
-              results.forEach((department) => {
-                choiceArray.push(`${department.name}`);
-              });
-              return choiceArray;
-            },
-            name: "deptToSeeBudget",
-          },
-        ])
-        .then((answer) => {
-          // Find a department that matches the user's selected department and create a variable for the chosenDept that's equal to the corresponding department's field values
-          let chosenDept;
-          results.forEach((department) => {
-            if (department.name === answer.deptToSeeBudget) {
-              chosenDept = department;
-            }
-          });
-
-          //  Join a column for the department name to the role table by department_id
-          // then sum all salaries for roles whose department matches the user's selected department
-          connection.query(
-            `SELECT 
-                    SUM(roleDepts.salary) AS Total_Utilized_Budget
-                FROM 
-                    (SELECT 
-                        role.department_id, 
-                        departments.name, 
-                        role.salary
-                    FROM role
-                    LEFT JOIN departments ON role.department_id = departments.id)
-                AS roleDepts
-                WHERE ?`,
-            { department_id: chosenDept.id },
-            (err, res) => {
-              if (err) throw err;
-              // Display department utilized budget as table in console
-              console.log(
-                `\nThe utilized budget in the ${chosenDept.name} department is as follows:\n`
-                  .brightGreen.italic
-              );
-              console.table(res);
-              console.log(
-                `---------------------------------------------------------------------\n`
-                  .brightGreen.bold
+                  .brightBlue.bold
               );
               init();
             }
@@ -905,7 +841,7 @@ const init = () => {
           return removeOptions();
         }
         default: {
-          console.log("Mischief Managed!".brightGreen.italic);
+          console.log("Thank you for using our service!".brightBlue.bold);
           return process.exit();
         }
       }
@@ -925,7 +861,6 @@ const viewOptions = () => {
           "View All Employees By Manager",
           "View All Roles",
           "View All Departments",
-          "View Total Utilized Budget By Department",
           "Return to start",
         ],
         message: "What would you like to see?",
@@ -949,9 +884,6 @@ const viewOptions = () => {
         }
         case "View All Departments": {
           return allDept();
-        }
-        case "View Total Utilized Budget By Department": {
-          return deptBudget();
         }
         case "Return to start": {
           return init();
@@ -1082,15 +1014,15 @@ connection.connect((err) => {
   console.log(`connected as id ${connection.threadId}`);
   console.log(
     `\n---------------------------------------------------------------------\n`
-      .yellow.bold
+      .green.bold
   );
   console.log(
     `\t WELCOME TO THE EMPLOYEE MANAGEMENT SYSTEM APPLICATION! \n`.brightBlue
-      .bgYellow.bold
+      .bgWhite.bold
   );
   console.log(
     `---------------------------------------------------------------------\n`
-      .yellow.bold
+      .green.bold
   );
   setTimeout(init, 1000);
 });
